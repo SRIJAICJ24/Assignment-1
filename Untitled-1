@@ -1,0 +1,56 @@
+
+import java.util.*;
+
+public class Problem1 {
+    private final Map<String, Integer> usernames = new HashMap<>();
+    private final Map<String, Integer> attempts = new HashMap<>();
+    private int nextUserId = 1;
+
+    public boolean checkAvailability(String username) {
+        attempts.put(username, attempts.getOrDefault(username, 0) + 1);
+        return !usernames.containsKey(username);
+    }
+
+    public boolean registerUsername(String username) {
+        attempts.put(username, attempts.getOrDefault(username, 0) + 1);
+        if (usernames.containsKey(username)) return false;
+        usernames.put(username, nextUserId++);
+        return true;
+    }
+
+    public List<String> suggestAlternatives(String username) {
+        List<String> result = new ArrayList<>();
+        String[] suggestions = {
+                username + "1",
+                username + "2",
+                username.replace("_", "."),
+                username + "_official",
+                username + "_2026"
+        };
+        for (String s : suggestions) {
+            if (!usernames.containsKey(s)) result.add(s);
+        }
+        return result;
+    }
+
+    public String getMostAttempted() {
+        String ans = null;
+        int max = -1;
+        for (Map.Entry<String, Integer> e : attempts.entrySet()) {
+            if (e.getValue() > max) {
+                max = e.getValue();
+                ans = e.getKey();
+            }
+        }
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        Problem1 checker = new Problem1();
+        checker.registerUsername("john_doe");
+        System.out.println(checker.checkAvailability("john_doe"));
+        System.out.println(checker.checkAvailability("jane_smith"));
+        System.out.println(checker.suggestAlternatives("john_doe"));
+        System.out.println(checker.getMostAttempted());
+    }
+}
